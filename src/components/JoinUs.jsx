@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { track } from '@vercel/analytics'
 import ArtworkSlider from './ArtworkSlider'
 import ProgressIndicator from './ProgressIndicator'
 import Step1Agreement from './Step1Agreement'
@@ -8,12 +9,21 @@ import Step4Complete from './Step4Complete'
 import { useT } from '../i18n'
 import './JoinUs.css'
 
+const STEP_NAMES = {
+  1: 'step1_terms_completed',
+  2: 'step2_account_completed',
+  3: 'step3_preferences_completed',
+}
+
 export default function JoinUs() {
   const [step, setStep] = useState(1)
   const [lang, setLang] = useState('ko')
   const t = useT(lang)
 
-  const next = () => setStep((s) => Math.min(s + 1, 4))
+  const next = () => {
+    if (STEP_NAMES[step]) track(STEP_NAMES[step])
+    setStep((s) => Math.min(s + 1, 4))
+  }
   const prev = () => setStep((s) => Math.max(s - 1, 1))
   const goHome = () => setStep(1)
   const toggleLang = () => setLang((l) => (l === 'ko' ? 'en' : 'ko'))
