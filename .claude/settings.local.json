@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:union-tempo-54311612.figma.site)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp"
+    ]
+  }
+}
