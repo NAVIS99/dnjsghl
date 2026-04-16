@@ -979,6 +979,100 @@
   color: var(--color-accent);
 }
 
+/* ===== 비밀번호 아이콘 그룹 ===== */
+.pw-icons {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.field-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+
+.field-icon-btn:hover {
+  opacity: 1;
+}
+
+/* ===== 관심작가 태그 ===== */
+.artist-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.artist-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px 0 12px;
+  background: rgba(247, 110, 51, 0.08);
+  border: 1px solid rgba(247, 110, 51, 0.3);
+  border-radius: 100px;
+  font-family: var(--font-pretendard);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-accent);
+}
+
+.artist-tag__remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+  opacity: 0.6;
+  padding: 0;
+  transition: opacity 0.15s;
+}
+
+.artist-tag__remove:hover {
+  opacity: 1;
+}
+
+/* ===== 관심작가 입력 행 ===== */
+.artist-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.artist-text-input {
+  padding-left: 16px !important;
+  flex: 1;
+}
+
+.btn-add-artist {
+  width: 72px;
+  height: 52.5px;
+  background: var(--color-primary);
+  border-radius: 4px;
+  font-family: var(--font-pretendard);
+  font-weight: 700;
+  font-size: 14px;
+  color: white;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+
+.btn-add-artist:hover {
+  opacity: 0.85;
+}
+
+.btn-add-artist--disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 /* ===== Step4 완료 화면 ===== */
 .complete-screen {
   display: flex;
@@ -986,6 +1080,12 @@
   align-items: center;
   gap: 28px;
   padding: 32px 0;
+}
+
+.complete-screen > .personalization-panel {
+  margin: 12px 0;
+  padding-top: 40px;
+  padding-bottom: 40px;
 }
 
 /* ===== 맞춤 설정 패널 ===== */
@@ -1016,7 +1116,7 @@
 .personalization-panel__title {
   font-family: var(--font-pretendard);
   font-weight: 700;
-  font-size: 17px;
+  font-size: 20px;
   color: var(--color-primary);
 }
 
@@ -1044,7 +1144,7 @@
 .complete-heading h2 {
   font-family: var(--font-pretendard);
   font-weight: 700;
-  font-size: 32px;
+  font-size: 28px;
   color: var(--color-primary);
   margin-bottom: 12px;
 }

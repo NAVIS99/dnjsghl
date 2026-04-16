@@ -25,11 +25,17 @@ export default function Step1Agreement({ t, onNext }) {
   const [marketingAll, setMarketingAll] = useState(false)
   const [marketing, setMarketing] = useState({ email: false, sms: false, phone: false })
 
-  const allChecked = agreements.every(Boolean)
-  const toggleAll = () => { const v = !allChecked; setAgreements([v, v, v, v]) }
+  const allChecked = agreements.every(Boolean) && marketingAll
+  const toggleAll = () => {
+    const v = !(agreements.every(Boolean) && marketingAll)
+    setAgreements([v, v, v, v])
+    setMarketingAll(v)
+    setMarketing({ email: v, sms: v, phone: v })
+  }
   const toggle = (i) => setAgreements((p) => p.map((val, idx) => idx === i ? !val : val))
 
-  const canContinue = allChecked && memberType && verifyStep === 'verified'
+  const requiredChecked = agreements.every(Boolean)
+  const canContinue = requiredChecked && memberType && verifyStep === 'verified'
   const isKo = t.langToggle === 'EN'
   const memberTypes = [t.domestic, t.domesticBiz, t.overseas, t.overseasBiz]
   const isPhone = authMethod === 'phone'
@@ -128,7 +134,7 @@ export default function Step1Agreement({ t, onNext }) {
 
       {/* 약관 동의 */}
       <div className="agreement-section">
-        <div className="agreement-box" style={showErrors && !allChecked ? { borderColor: '#E53E3E' } : {}}>
+        <div className="agreement-box" style={showErrors && !requiredChecked ? { borderColor: '#E53E3E' } : {}}>
           <label className="agreement-box__all">
             <CheckBox checked={allChecked} onChange={toggleAll} />
             <span className="agreement-box__all-label">{t.agreeAll}</span>
@@ -178,7 +184,7 @@ export default function Step1Agreement({ t, onNext }) {
             </div>
           </div>
         </div>
-        {showErrors && !allChecked && (
+        {showErrors && !requiredChecked && (
           <p className="field-error">{isKo ? '필수 약관에 모두 동의해주세요.' : 'Please agree to all required terms.'}</p>
         )}
       </div>

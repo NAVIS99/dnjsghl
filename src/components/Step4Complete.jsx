@@ -2,14 +2,11 @@ import { useState, useRef, useEffect } from 'react'
 import confetti from 'canvas-confetti'
 import './StepForm.css'
 
-const SUGGESTED_ARTISTS = ['Yayoi Kusama', 'David Hockney', 'Gerhard Richter', 'Banksy']
-
 export default function Step4Complete({ t, onGoHome }) {
   const [categories, setCategories] = useState([])
   const [artists, setArtists] = useState([])
-  const [showDirectInput, setShowDirectInput] = useState(false)
-  const [customArtist, setCustomArtist] = useState('')
-  const directInputRef = useRef(null)
+  const [artistInput, setArtistInput] = useState('')
+  const artistInputRef = useRef(null)
 
   const isKo = t.langToggle === 'EN'
 
@@ -22,13 +19,19 @@ export default function Step4Complete({ t, onGoHome }) {
   }, [])
 
   const toggleCategory = (c) => setCategories((p) => p.includes(c) ? p.filter((x) => x !== c) : [...p, c])
-  const toggleArtist = (a) => setArtists((p) => p.includes(a) ? p.filter((x) => x !== a) : [...p, a])
 
-  const handleDirectToggle = () => {
-    setShowDirectInput((v) => !v)
-    if (!showDirectInput) {
-      setTimeout(() => directInputRef.current?.focus(), 50)
-    }
+  const addArtist = () => {
+    const name = artistInput.trim()
+    if (!name || artists.includes(name)) return
+    setArtists((p) => [...p, name])
+    setArtistInput('')
+    artistInputRef.current?.focus()
+  }
+
+  const removeArtist = (name) => setArtists((p) => p.filter((a) => a !== name))
+
+  const handleArtistKeyDown = (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); addArtist() }
   }
 
   return (
@@ -51,9 +54,8 @@ export default function Step4Complete({ t, onGoHome }) {
       <div className="personalization-panel">
         <div className="personalization-panel__header">
           <div className="personalization-panel__title-row">
-            <span style={{ fontSize: '18px' }}>✨</span>
+            <span style={{ fontSize: '20px' }}>✨</span>
             <p className="personalization-panel__title">{t.step3Title}</p>
-            <span className="optional-badge">{t.optional}</span>
           </div>
           <p className="personalization-panel__desc">{t.step3Desc}</p>
         </div>
@@ -82,55 +84,42 @@ export default function Step4Complete({ t, onGoHome }) {
           <p className="field-group__label">
             {t.preferredArtists} <span className="label-optional">{t.optionalMark}</span>
           </p>
-          <div className="artist-chips">
-            {SUGGESTED_ARTISTS.map((a) => {
-              const isSelected = artists.includes(a)
-              return (
-                <button
-                  key={a}
-                  className={`artist-chip ${isSelected ? 'artist-chip--selected' : ''}`}
-                  onClick={() => toggleArtist(a)}
-                >
-                  {isSelected && (
-                    <svg width="11" height="9" viewBox="0 0 11 9" fill="none" style={{ flexShrink: 0 }}>
-                      <path d="M1 4.5l3 3 6-7" stroke="#F76E33" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  )}
-                  {!isSelected && <span style={{ marginRight: '2px' }}>+</span>}
-                  {a}
-                </button>
-              )
-            })}
-            {/* 직접입력 칩 */}
-            <button
-              className={`artist-chip ${showDirectInput ? 'artist-chip--selected' : ''}`}
-              onClick={handleDirectToggle}
-            >
-              {showDirectInput ? (
-                <>
-                  <svg width="11" height="9" viewBox="0 0 11 9" fill="none" style={{ flexShrink: 0 }}>
-                    <path d="M1 4.5l3 3 6-7" stroke="#F76E33" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  {isKo ? '직접입력' : 'Custom'}
-                </>
-              ) : (
-                <>{isKo ? '+ 직접입력' : '+ Custom'}</>
-              )}
-            </button>
-          </div>
 
-          {/* 직접입력 인풋 */}
-          {showDirectInput && (
-            <div className="direct-input-row">
-              <input
-                ref={directInputRef}
-                className="form-field__input direct-artist-input"
-                placeholder={isKo ? '작가 이름을 입력하세요' : 'Enter artist name'}
-                value={customArtist}
-                onChange={(e) => setCustomArtist(e.target.value)}
-              />
+          {/* 추가된 작가 태그 */}
+          {artists.length > 0 && (
+            <div className="artist-tags-row">
+              {artists.map((a) => (
+                <span key={a} className="artist-tag">
+                  {a}
+                  <button type="button" className="artist-tag__remove" onClick={() => removeArtist(a)}>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <path d="M3 3l6 6M9 3l-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                    </svg>
+                  </button>
+                </span>
+              ))}
             </div>
           )}
+
+          {/* 작가 입력 필드 */}
+          <div className="artist-input-row">
+            <input
+              ref={artistInputRef}
+              className="form-field__input artist-text-input"
+              placeholder={isKo ? '작가 이름을 입력하세요' : 'Enter artist name'}
+              value={artistInput}
+              onChange={(e) => setArtistInput(e.target.value)}
+              onKeyDown={handleArtistKeyDown}
+            />
+            <button
+              type="button"
+              className={`btn-add-artist ${!artistInput.trim() ? 'btn-add-artist--disabled' : ''}`}
+              onClick={addArtist}
+              disabled={!artistInput.trim()}
+            >
+              {isKo ? '추가' : 'Add'}
+            </button>
+          </div>
         </div>
       </div>
 

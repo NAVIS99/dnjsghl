@@ -9,6 +9,8 @@ export default function Step2BasicInfo({ t, onNext, onPrev }) {
   const [gender, setGender] = useState('')
   const [occupation, setOccupation] = useState('')
   const [clickCount, setClickCount] = useState(0)
+  const [showPw, setShowPw] = useState(false)
+  const [showPwConfirm, setShowPwConfirm] = useState(false)
 
   const isKo = t.langToggle === 'EN'
   const set = (key) => (e) => setForm((p) => ({ ...p, [key]: e.target.value }))
@@ -71,8 +73,11 @@ export default function Step2BasicInfo({ t, onNext, onPrev }) {
           <label className="form-field__label">{t.password} <span className="text-accent">*</span></label>
           <div className="form-field__input-wrap">
             <LockIcon />
-            <input className="form-field__input" type="password" placeholder={t.passwordPlaceholder} value={form.password} onChange={set('password')} style={submitted && !form.password ? { borderColor: '#E53E3E' } : {}} />
-            {form.password && <button className="field-clear-btn" type="button" onClick={clear('password')}><ClearIcon /></button>}
+            <input className="form-field__input" type={showPw ? 'text' : 'password'} placeholder={t.passwordPlaceholder} value={form.password} onChange={set('password')} style={{ paddingRight: '80px', ...(submitted && !form.password ? { borderColor: '#E53E3E' } : {}) }} />
+            <div className="pw-icons">
+              {form.password && <button className="field-icon-btn" type="button" onClick={clear('password')}><ClearIcon /></button>}
+              <button className="field-icon-btn" type="button" onClick={() => setShowPw((v) => !v)}><EyeIcon open={showPw} /></button>
+            </div>
           </div>
           {submitted && !form.password && <p className="field-error">{isKo ? '비밀번호를 입력해주세요.' : 'Please enter a password.'}</p>}
         </div>
@@ -84,13 +89,16 @@ export default function Step2BasicInfo({ t, onNext, onPrev }) {
             <LockIcon />
             <input
               className="form-field__input"
-              type="password"
+              type={showPwConfirm ? 'text' : 'password'}
               placeholder={t.passwordConfirmPlaceholder}
               value={form.passwordConfirm}
               onChange={set('passwordConfirm')}
-              style={(form.passwordConfirm && form.password !== form.passwordConfirm) || (submitted && !form.passwordConfirm) ? { borderColor: '#E53E3E' } : {}}
+              style={{ paddingRight: '80px', ...((form.passwordConfirm && form.password !== form.passwordConfirm) || (submitted && !form.passwordConfirm) ? { borderColor: '#E53E3E' } : {}) }}
             />
-            {form.passwordConfirm && <button className="field-clear-btn" type="button" onClick={clear('passwordConfirm')}><ClearIcon /></button>}
+            <div className="pw-icons">
+              {form.passwordConfirm && <button className="field-icon-btn" type="button" onClick={clear('passwordConfirm')}><ClearIcon /></button>}
+              <button className="field-icon-btn" type="button" onClick={() => setShowPwConfirm((v) => !v)}><EyeIcon open={showPwConfirm} /></button>
+            </div>
           </div>
           {submitted && !form.passwordConfirm && <p className="field-error">{isKo ? '비밀번호 확인을 입력해주세요.' : 'Please confirm your password.'}</p>}
           {form.passwordConfirm && form.password !== form.passwordConfirm && <p className="field-error">{isKo ? '비밀번호가 일치하지 않습니다.' : 'Passwords do not match.'}</p>}
@@ -213,6 +221,20 @@ function CalendarIcon() {
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
       <rect x="2.5" y="3.5" width="15" height="14" rx="1.5" stroke="#6B6B7B" strokeWidth="1.5"/>
       <path d="M6.5 2v3M13.5 2v3M2.5 8.5h15" stroke="#6B6B7B" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  )
+}
+function EyeIcon({ open }) {
+  return open ? (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <path d="M1 9C2.5 5 5.5 3 9 3s6.5 2 8 6c-1.5 4-4.5 6-8 6S2.5 13 1 9z" stroke="#6B6B7B" strokeWidth="1.4"/>
+      <circle cx="9" cy="9" r="2.5" stroke="#6B6B7B" strokeWidth="1.4"/>
+    </svg>
+  ) : (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <path d="M1 9C2.5 5 5.5 3 9 3s6.5 2 8 6c-1.5 4-4.5 6-8 6S2.5 13 1 9z" stroke="#6B6B7B" strokeWidth="1.4"/>
+      <circle cx="9" cy="9" r="2.5" stroke="#6B6B7B" strokeWidth="1.4"/>
+      <path d="M2 2l14 14" stroke="#6B6B7B" strokeWidth="1.4" strokeLinecap="round"/>
     </svg>
   )
 }
