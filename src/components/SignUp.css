@@ -1,10 +1,10 @@
-.joinus {
+.signup {
   display: flex;
   min-height: 100vh;
   background: var(--color-bg);
 }
 
-.joinus__main {
+.signup__main {
   margin-left: 420px;
   flex: 1;
   min-height: 100vh;
@@ -13,20 +13,20 @@
   padding: 48px 24px 80px;
 }
 
-.joinus__form-wrap {
-  width: 576px;
+.signup__form-wrap {
+  width: 560px;
   max-width: 100%;
   display: flex;
   flex-direction: column;
   gap: 32px;
 }
 
-.joinus__header {
+.signup__header {
   display: flex;
   justify-content: flex-end;
 }
 
-.joinus__lang-btn {
+.signup__lang-btn {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -42,18 +42,18 @@
   transition: border-color 0.15s;
 }
 
-.joinus__lang-btn:hover {
+.signup__lang-btn:hover {
   border-color: var(--color-primary);
 }
 
-.joinus__logo {
+.signup__logo {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
 }
 
-.joinus__logo-text {
+.signup__logo-text {
   font-family: 'Playfair Display', serif;
   font-weight: 600;
   font-style: normal;
@@ -63,7 +63,7 @@
   letter-spacing: 0.04em;
 }
 
-.joinus__logo-sub {
+.signup__logo-sub {
   font-family: var(--font-pretendard);
   font-weight: 400;
   font-size: 14px;
@@ -73,22 +73,21 @@
 
 /* ===== 모바일 ===== */
 @media (max-width: 900px) {
-  .joinus {
+  .signup {
     flex-direction: column;
   }
 
-  .joinus__main {
+  .signup__main {
     margin-left: 0;
     padding-top: 24px;
-    /* 하단 고정 버튼 최대 높이(버튼+gap+텍스트버튼) + 여유 */
     padding-bottom: 170px;
     padding-left: 20px;
     padding-right: 20px;
   }
 
-  .joinus__form-wrap {
+  .signup__form-wrap {
     width: 100%;
-    max-width: 576px;
+    max-width: 560px;
   }
 
   /* 하단 고정 버튼 영역 */
@@ -106,16 +105,16 @@
 }
 
 @media (max-width: 480px) {
-  .joinus__logo-text {
+  .signup__logo-text {
     font-size: 36px;
   }
 
-  .joinus__main {
+  .signup__main {
     padding-left: 16px;
     padding-right: 16px;
   }
 
-  .joinus__form-wrap {
+  .signup__form-wrap {
     gap: 24px;
   }
 
