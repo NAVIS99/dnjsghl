@@ -146,16 +146,13 @@ export default function Step1Agreement({ t, onNext }) {
               </div>
             ))}
 
-            {/* 선택 구분선 */}
-            <div className="agreement-optional-divider" />
-
             {/* 마케팅 수신 동의 (선택) */}
             <div className="agreement-item agreement-item--marketing">
               <label className="agreement-item__label">
                 <CheckBox checked={marketingAll} onChange={toggleMarketingAll} />
                 <div className="agreement-item__text">
                   <p>
-                    <span className="label-optional">{isKo ? '[선택]' : '[Optional]'}</span>
+                    <span className="marketing-optional-mark">{isKo ? '[선택]' : '[Optional]'}</span>
                     {' '}{t.marketingTitle}
                   </p>
                   <div className="marketing-channels-inline">
@@ -177,6 +174,7 @@ export default function Step1Agreement({ t, onNext }) {
                   </div>
                 </div>
               </label>
+              <button className="btn-detail" onClick={() => setModal(4)}>{t.viewDetail} <ArrowIcon /></button>
             </div>
           </div>
         </div>
@@ -217,11 +215,6 @@ export default function Step1Agreement({ t, onNext }) {
               {isPhone ? t.emailFallbackLink : t.phoneFallbackLink} →
             </button>
           )}
-          {verifyStep === 'code' && (
-            <button className="auth-fallback-link" onClick={handleCancel}>
-              {isKo ? '취소' : 'Cancel'} ×
-            </button>
-          )}
         </div>
 
         {/* 입력 + 발송 버튼 */}
@@ -236,13 +229,20 @@ export default function Step1Agreement({ t, onNext }) {
                 onChange={(e) => setInputValue(e.target.value)}
                 disabled={verifyStep === 'code'}
                 style={{
-                  paddingRight: inputValue ? '40px' : '16px',
+                  paddingRight: verifyStep === 'code' ? '80px' : (inputValue ? '40px' : '16px'),
                   ...(inputHasError ? { borderColor: '#E53E3E' } : {}),
                 }}
               />
+              {/* 입력 단계: 클리어 버튼 */}
               {inputValue && verifyStep === 'input' && (
                 <button className="field-clear-btn" onClick={() => setInputValue('')} type="button">
                   <ClearIcon />
+                </button>
+              )}
+              {/* 코드 단계: 필드 내부 재입력 버튼 */}
+              {verifyStep === 'code' && (
+                <button className="field-inline-btn" onClick={handleCancel} type="button">
+                  {isKo ? '재입력' : 'Re-enter'}
                 </button>
               )}
             </div>
@@ -336,11 +336,16 @@ export default function Step1Agreement({ t, onNext }) {
       {/* 약관 모달 */}
       {modal !== null && (
         <TermsModal
-          type={modal === 3 ? 'privacy' : 'auction'}
+          type={modal === 3 || modal === 4 ? 'privacy' : 'auction'}
           lang={isKo ? 'ko' : 'en'}
           onClose={() => setModal(null)}
           onAgree={() => {
-            setAgreements((p) => p.map((val, idx) => idx === modal ? true : val))
+            if (modal === 4) {
+              setMarketingAll(true)
+              setMarketing({ email: true, sms: true, phone: true })
+            } else {
+              setAgreements((p) => p.map((val, idx) => idx === modal ? true : val))
+            }
             setModal(null)
           }}
         />

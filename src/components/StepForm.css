@@ -629,20 +629,42 @@
   color: var(--color-text-secondary);
 }
 
-/* ===== 약관 내 선택 구분선 ===== */
-.agreement-optional-divider {
-  border: none;
-  border-top: 1px dashed var(--color-border);
-  margin: 4px 0 0;
-}
-
 /* ===== 마케팅 채널 인라인 칩 ===== */
 .marketing-channels-inline {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   flex-wrap: wrap;
   margin-top: 6px;
+}
+
+/* 마케팅 [선택] 마크 */
+.marketing-optional-mark {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+
+/* 필드 내부 재입력 버튼 */
+.field-inline-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-pretendard);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  background: var(--color-border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  white-space: nowrap;
+  transition: color 0.15s, background 0.15s;
+}
+
+.field-inline-btn:hover {
+  color: var(--color-primary);
+  background: #d8d8dc;
 }
 
 .marketing-channel-chip {

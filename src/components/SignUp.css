@@ -100,7 +100,6 @@
     background: var(--color-bg);
     border-top: 1px solid var(--color-border);
     z-index: 100;
-    box-shadow: 0 -4px 16px rgba(10, 17, 40, 0.06);
   }
 }
 
