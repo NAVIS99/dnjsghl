@@ -629,6 +629,46 @@
   color: var(--color-text-secondary);
 }
 
+/* ===== 약관 내 선택 구분선 ===== */
+.agreement-optional-divider {
+  border: none;
+  border-top: 1px dashed var(--color-border);
+  margin: 4px 0 0;
+}
+
+/* ===== 마케팅 채널 인라인 칩 ===== */
+.marketing-channels-inline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.marketing-channel-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-pretendard);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.marketing-channel-chip--active {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.marketing-channel-chip:hover {
+  color: var(--color-primary);
+}
+
 /* ===== 마케팅 동의 (레퍼런스 스타일) ===== */
 .marketing-agree-box {
   border: 1.5px solid var(--color-border);

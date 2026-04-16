@@ -8,15 +8,11 @@ export default function Step2BasicInfo({ t, onNext, onPrev }) {
   const [submitted, setSubmitted] = useState(false)
   const [gender, setGender] = useState('')
   const [occupation, setOccupation] = useState('')
-  const [marketing, setMarketing] = useState({ email: false, sms: false, phone: false })
   const [clickCount, setClickCount] = useState(0)
 
   const isKo = t.langToggle === 'EN'
   const set = (key) => (e) => setForm((p) => ({ ...p, [key]: e.target.value }))
   const clear = (key) => () => setForm((p) => ({ ...p, [key]: '' }))
-  const allMarketing = marketing.email && marketing.sms && marketing.phone
-  const toggleAllMarketing = () => { const v = !allMarketing; setMarketing({ email: v, sms: v, phone: v }) }
-  const toggleMarketing = (k) => setMarketing((p) => ({ ...p, [k]: !p[k] }))
   const canContinue = Object.values(form).every(Boolean) && form.password === form.passwordConfirm
 
   // 스크롤 앵커 refs
@@ -162,37 +158,6 @@ export default function Step2BasicInfo({ t, onNext, onPrev }) {
                 <option key={o} value={o}>{o}</option>
               ))}
             </select>
-          </div>
-        </div>
-      </div>
-
-      {/* 마케팅 수신 동의 */}
-      <div className="field-group">
-        <p className="field-group__label">
-          {t.marketingTitle} <span className="label-optional">{t.optionalMark}</span>
-        </p>
-        <div className="marketing-agree-box">
-          {/* 전체동의 */}
-          <label className="marketing-agree-all">
-            <CheckBox checked={allMarketing} onChange={toggleAllMarketing} />
-            <div className="marketing-agree-all__text">
-              <span className="marketing-agree-all__title">{t.marketingAll}</span>
-              <span className="marketing-agree-all__desc">{t.marketingDesc}</span>
-            </div>
-          </label>
-          <div className="marketing-agree-divider" />
-          {/* 개별 항목 — 1행 3등분 */}
-          <div className="marketing-agree-items-row">
-            {[
-              { key: 'email', label: t.emailNotif },
-              { key: 'sms', label: t.smsNotif },
-              { key: 'phone', label: t.phoneNotif },
-            ].map(({ key, label }) => (
-              <label key={key} className="marketing-agree-item">
-                <CheckBox checked={marketing[key]} onChange={() => toggleMarketing(key)} />
-                <span className="marketing-agree-item__label">{label}</span>
-              </label>
-            ))}
           </div>
         </div>
       </div>

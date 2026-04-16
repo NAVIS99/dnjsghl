@@ -1,4 +1,5 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import confetti from 'canvas-confetti'
 import './StepForm.css'
 
 const SUGGESTED_ARTISTS = ['Yayoi Kusama', 'David Hockney', 'Gerhard Richter', 'Banksy']
@@ -11,6 +12,14 @@ export default function Step4Complete({ t, onGoHome }) {
   const directInputRef = useRef(null)
 
   const isKo = t.langToggle === 'EN'
+
+  // 빵빠레 효과
+  useEffect(() => {
+    const fire = (opts) => confetti({ particleCount: 60, spread: 70, origin: { y: 0.55 }, ...opts })
+    fire({ angle: 60, origin: { x: 0.1, y: 0.6 }, colors: ['#F76E33', '#C9A86A', '#0A1128'] })
+    fire({ angle: 120, origin: { x: 0.9, y: 0.6 }, colors: ['#F76E33', '#C9A86A', '#FFFFFF'] })
+    setTimeout(() => fire({ angle: 90, origin: { x: 0.5, y: 0.65 }, particleCount: 80 }), 250)
+  }, [])
 
   const toggleCategory = (c) => setCategories((p) => p.includes(c) ? p.filter((x) => x !== c) : [...p, c])
   const toggleArtist = (a) => setArtists((p) => p.includes(a) ? p.filter((x) => x !== a) : [...p, a])

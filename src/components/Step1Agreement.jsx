@@ -17,9 +17,13 @@ export default function Step1Agreement({ t, onNext }) {
   const [timer, setTimer] = useState(TIMER_SEC)
   const timerRef = useRef(null)
 
-  const [modal, setModal] = useState(null) // null | 0 | 1 | 2 | 3
+  const [modal, setModal] = useState(null)
   const [showErrors, setShowErrors] = useState(false)
   const [showToast, setShowToast] = useState(false)
+
+  // 마케팅 동의 (선택)
+  const [marketingAll, setMarketingAll] = useState(false)
+  const [marketing, setMarketing] = useState({ email: false, sms: false, phone: false })
 
   const allChecked = agreements.every(Boolean)
   const toggleAll = () => { const v = !allChecked; setAgreements([v, v, v, v]) }
@@ -29,6 +33,18 @@ export default function Step1Agreement({ t, onNext }) {
   const isKo = t.langToggle === 'EN'
   const memberTypes = [t.domestic, t.domesticBiz, t.overseas, t.overseasBiz]
   const isPhone = authMethod === 'phone'
+
+  // 마케팅 전체 토글
+  const toggleMarketingAll = () => {
+    const v = !marketingAll
+    setMarketingAll(v)
+    setMarketing({ email: v, sms: v, phone: v })
+  }
+  const toggleMarketingChannel = (k) => {
+    const next = { ...marketing, [k]: !marketing[k] }
+    setMarketing(next)
+    setMarketingAll(next.email && next.sms && next.phone)
+  }
 
   const handleContinue = () => {
     if (!canContinue) { setShowErrors(true); return }
@@ -82,6 +98,14 @@ export default function Step1Agreement({ t, onNext }) {
     setShowToast(true)
   }
 
+  const handleCancel = () => {
+    setVerifyStep('input')
+    setInputValue('')
+    setCode('')
+    setCodeError(false)
+    clearInterval(timerRef.current)
+  }
+
   const switchAuthMethod = () => {
     setAuthMethod(isPhone ? 'email' : 'phone')
     setInputValue('')
@@ -93,6 +117,7 @@ export default function Step1Agreement({ t, onNext }) {
 
   const inputPlaceholder = isPhone ? t.phonePlaceholder : 'your.email@example.com'
   const inputType = isPhone ? 'tel' : 'email'
+  const inputHasError = showErrors && verifyStep !== 'verified'
 
   return (
     <div className="step-form">
@@ -120,6 +145,39 @@ export default function Step1Agreement({ t, onNext }) {
                 <button className="btn-detail" onClick={() => setModal(i)}>{t.viewDetail} <ArrowIcon /></button>
               </div>
             ))}
+
+            {/* 선택 구분선 */}
+            <div className="agreement-optional-divider" />
+
+            {/* 마케팅 수신 동의 (선택) */}
+            <div className="agreement-item agreement-item--marketing">
+              <label className="agreement-item__label">
+                <CheckBox checked={marketingAll} onChange={toggleMarketingAll} />
+                <div className="agreement-item__text">
+                  <p>
+                    <span className="label-optional">{isKo ? '[선택]' : '[Optional]'}</span>
+                    {' '}{t.marketingTitle}
+                  </p>
+                  <div className="marketing-channels-inline">
+                    {[
+                      { key: 'email', label: t.emailNotif },
+                      { key: 'sms',   label: t.smsNotif   },
+                      { key: 'phone', label: t.phoneNotif  },
+                    ].map(({ key, label }) => (
+                      <button
+                        key={key}
+                        type="button"
+                        className={`marketing-channel-chip ${marketing[key] ? 'marketing-channel-chip--active' : ''}`}
+                        onClick={(e) => { e.stopPropagation(); toggleMarketingChannel(key) }}
+                      >
+                        <ChannelCheckIcon active={marketing[key]} />
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </label>
+            </div>
           </div>
         </div>
         {showErrors && !allChecked && (
@@ -150,7 +208,6 @@ export default function Step1Agreement({ t, onNext }) {
 
       {/* 본인 인증 */}
       <div className="field-group">
-        {/* 라벨 + 인증 전환 링크 */}
         <div className="field-group__label-row">
           <p className="field-group__label">
             {isPhone ? t.phoneVerify : t.emailVerify} <span className="text-accent">*</span>
@@ -158,6 +215,11 @@ export default function Step1Agreement({ t, onNext }) {
           {verifyStep === 'input' && (
             <button className="auth-fallback-link" onClick={switchAuthMethod}>
               {isPhone ? t.emailFallbackLink : t.phoneFallbackLink} →
+            </button>
+          )}
+          {verifyStep === 'code' && (
+            <button className="auth-fallback-link" onClick={handleCancel}>
+              {isKo ? '취소' : 'Cancel'} ×
             </button>
           )}
         </div>
@@ -173,7 +235,10 @@ export default function Step1Agreement({ t, onNext }) {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 disabled={verifyStep === 'code'}
-                style={{ paddingRight: inputValue ? '40px' : '16px' }}
+                style={{
+                  paddingRight: inputValue ? '40px' : '16px',
+                  ...(inputHasError ? { borderColor: '#E53E3E' } : {}),
+                }}
               />
               {inputValue && verifyStep === 'input' && (
                 <button className="field-clear-btn" onClick={() => setInputValue('')} type="button">
@@ -197,7 +262,7 @@ export default function Step1Agreement({ t, onNext }) {
           </div>
         )}
 
-        {/* 유효성 오류: 입력란 바로 아래 */}
+        {/* 유효성 오류 */}
         {showErrors && verifyStep !== 'verified' && (
           <p className="field-error">{isKo ? '본인인증을 완료해주세요.' : 'Please complete identity verification.'}</p>
         )}
@@ -306,6 +371,21 @@ function CheckBox({ checked, onChange }) {
     </button>
   )
 }
+
+function ChannelCheckIcon({ active }) {
+  return (
+    <svg width="11" height="9" viewBox="0 0 11 9" fill="none" style={{ flexShrink: 0 }}>
+      <path
+        d="M1 4.5l3 3 6-7"
+        stroke={active ? '#F76E33' : '#C4C4C8'}
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 function ArrowIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ display: 'inline', verticalAlign: 'middle' }}>
