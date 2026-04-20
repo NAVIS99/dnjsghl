@@ -5,9 +5,11 @@ import './StepForm.css'
 const TEST_CODE = '123456'
 const TIMER_SEC = 180
 
-export default function Step1Agreement({ t, onNext }) {
+export default function Step1Agreement({ t, onNext, onMemberTypeChange }) {
   const [agreements, setAgreements] = useState([false, false, false, false])
-  const [memberType, setMemberType] = useState('')
+  const [memberTypeIdx, setMemberTypeIdx] = useState(0)
+  const [bizRegNum, setBizRegNum] = useState('')
+  const [bizRegChecked, setBizRegChecked] = useState(false)
   const [authMethod, setAuthMethod] = useState('phone')
 
   const [inputValue, setInputValue] = useState('')
@@ -35,7 +37,8 @@ export default function Step1Agreement({ t, onNext }) {
   const toggle = (i) => setAgreements((p) => p.map((val, idx) => idx === i ? !val : val))
 
   const requiredChecked = agreements.every(Boolean)
-  const canContinue = requiredChecked && memberType && verifyStep === 'verified'
+  const isDomesticBiz = memberTypeIdx === 1
+  const canContinue = requiredChecked && verifyStep === 'verified' && (!isDomesticBiz || bizRegNum.trim())
   const isKo = t.langToggle === 'EN'
   const memberTypes = [t.domestic, t.domesticBiz, t.overseas, t.overseasBiz]
   const isPhone = authMethod === 'phone'
@@ -54,7 +57,7 @@ export default function Step1Agreement({ t, onNext }) {
 
   const handleContinue = () => {
     if (!canContinue) { setShowErrors(true); return }
-    onNext()
+    onNext({ memberTypeIdx, verifiedInput: inputValue, verifiedMethod: authMethod, bizRegNum })
   }
 
   // 타이머
@@ -192,23 +195,57 @@ export default function Step1Agreement({ t, onNext }) {
       {/* 회원 유형 */}
       <div className="field-group">
         <p className="field-group__label">{t.memberType} <span className="text-accent">*</span></p>
-        <div className="form-select-wrap">
-          <select
-            className="form-select"
-            value={memberType}
-            onChange={(e) => setMemberType(e.target.value)}
-            style={showErrors && !memberType ? { borderColor: '#E53E3E' } : {}}
-          >
-            <option value="">{t.memberTypePlaceholder}</option>
-            {memberTypes.map((type) => (
-              <option key={type} value={type}>{type}</option>
-            ))}
-          </select>
+        <div className="member-type-grid">
+          {memberTypes.map((type, i) => (
+            <button
+              key={type}
+              type="button"
+              className={`member-type-btn ${memberTypeIdx === i ? 'member-type-btn--active' : ''}`}
+              onClick={() => { setMemberTypeIdx(i); onMemberTypeChange?.(i) }}
+            >
+              {type}
+            </button>
+          ))}
         </div>
-        {showErrors && !memberType && (
-          <p className="field-error">{isKo ? '회원 유형을 선택해주세요.' : 'Please select a member type.'}</p>
-        )}
       </div>
+
+      {/* 사업자 등록번호 (국내 사업자만) */}
+      {isDomesticBiz && (
+        <div className="field-group">
+          <p className="field-group__label">{t.bizRegNum} <span className="text-accent">*</span></p>
+          <div className="phone-input-row">
+            <div className="input-with-icon" style={{ position: 'relative' }}>
+              <BizIcon />
+              <input
+                type="text"
+                placeholder={t.bizRegNumPlaceholder}
+                value={bizRegNum}
+                onChange={(e) => { setBizRegNum(e.target.value); setBizRegChecked(false) }}
+                style={showErrors && !bizRegNum.trim() ? { borderColor: '#E53E3E' } : {}}
+              />
+              {bizRegNum && !bizRegChecked && (
+                <button className="field-clear-btn" type="button" onClick={() => { setBizRegNum(''); setBizRegChecked(false) }}>
+                  <ClearIcon />
+                </button>
+              )}
+            </div>
+            <button
+              className={`btn-send-code ${!bizRegNum.trim() ? 'btn-send-code--disabled' : ''}`}
+              type="button"
+              disabled={!bizRegNum.trim()}
+              onClick={() => { if (bizRegNum.trim()) setBizRegChecked(true) }}
+            >
+              {isKo ? '조회' : 'Search'}
+            </button>
+          </div>
+          {bizRegChecked && (
+            <p className="field-success">{isKo ? '등록 가능한 번호입니다.' : 'Available business number.'}</p>
+          )}
+          {showErrors && !bizRegNum.trim() && (
+            <p className="field-error">{isKo ? '사업자 등록번호를 입력해주세요.' : 'Please enter business registration number.'}</p>
+          )}
+        </div>
+      )}
 
       {/* 본인 인증 */}
       <div className="field-group">
@@ -216,56 +253,84 @@ export default function Step1Agreement({ t, onNext }) {
           <p className="field-group__label">
             {isPhone ? t.phoneVerify : t.emailVerify} <span className="text-accent">*</span>
           </p>
-          {verifyStep === 'input' && (
-            <button className="auth-fallback-link" onClick={switchAuthMethod}>
-              {isPhone ? t.emailFallbackLink : t.phoneFallbackLink} →
-            </button>
-          )}
         </div>
 
-        {/* 입력 + 발송 버튼 */}
-        {verifyStep !== 'verified' && (
+        {/* 인증 완료: 비활성화 input + 체크 마크 */}
+        {verifyStep === 'verified' ? (
           <div className="phone-input-row">
             <div className="input-with-icon" style={{ position: 'relative' }}>
               {isPhone ? <PhoneIcon /> : <EmailIcon />}
               <input
                 type={inputType}
-                placeholder={inputPlaceholder}
                 value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                disabled={verifyStep === 'code'}
-                style={{
-                  paddingRight: verifyStep === 'code' ? '80px' : (inputValue ? '40px' : '16px'),
-                  ...(inputHasError ? { borderColor: '#E53E3E' } : {}),
-                }}
+                disabled
+                style={{ paddingRight: '44px', backgroundColor: '#F8F8FA', color: '#6B6B7B' }}
               />
-              {/* 입력 단계: 클리어 버튼 */}
-              {inputValue && verifyStep === 'input' && (
-                <button className="field-clear-btn" onClick={() => setInputValue('')} type="button">
-                  <ClearIcon />
+              <span className="field-verified-mark">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <circle cx="9" cy="9" r="8" fill="rgba(34,197,94,0.1)" stroke="#22C55E" strokeWidth="1.3"/>
+                  <path d="M5.5 9l2.5 2.5 4.5-5" stroke="#22C55E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            </div>
+            <button
+              className="btn-send-code"
+              style={{ minWidth: '60px' }}
+              onClick={() => { setVerifyStep('input'); setInputValue('') }}
+            >
+              {isKo ? '변경' : 'Change'}
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* 입력 + 발송 버튼 */}
+            <div className="phone-input-row">
+              <div className="input-with-icon" style={{ position: 'relative' }}>
+                {isPhone ? <PhoneIcon /> : <EmailIcon />}
+                <input
+                  type={inputType}
+                  placeholder={inputPlaceholder}
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  disabled={verifyStep === 'code'}
+                  style={{
+                    paddingRight: verifyStep === 'code' ? '80px' : (inputValue ? '40px' : '16px'),
+                    ...(inputHasError ? { borderColor: '#E53E3E' } : {}),
+                  }}
+                />
+                {inputValue && verifyStep === 'input' && (
+                  <button className="field-clear-btn" onClick={() => setInputValue('')} type="button">
+                    <ClearIcon />
+                  </button>
+                )}
+                {verifyStep === 'code' && (
+                  <button className="field-inline-btn" onClick={handleCancel} type="button">
+                    {isKo ? '재입력' : 'Re-enter'}
+                  </button>
+                )}
+              </div>
+              {verifyStep === 'input' ? (
+                <button
+                  className={`btn-send-code ${!inputValue.trim() ? 'btn-send-code--disabled' : ''}`}
+                  onClick={handleSendCode}
+                  disabled={!inputValue.trim()}
+                >
+                  {t.sendCode}
                 </button>
-              )}
-              {/* 코드 단계: 필드 내부 재입력 버튼 */}
-              {verifyStep === 'code' && (
-                <button className="field-inline-btn" onClick={handleCancel} type="button">
-                  {isKo ? '재입력' : 'Re-enter'}
+              ) : (
+                <button className="btn-send-code btn-send-code--resend" onClick={handleResend}>
+                  {isKo ? '재발송' : 'Resend'}
                 </button>
               )}
             </div>
-            {verifyStep === 'input' ? (
-              <button
-                className={`btn-send-code ${!inputValue.trim() ? 'btn-send-code--disabled' : ''}`}
-                onClick={handleSendCode}
-                disabled={!inputValue.trim()}
-              >
-                {t.sendCode}
-              </button>
-            ) : (
-              <button className="btn-send-code btn-send-code--resend" onClick={handleResend}>
-                {isKo ? '재발송' : 'Resend'}
+
+            {/* 이메일/폰 전환 텍스트 버튼 */}
+            {verifyStep === 'input' && (
+              <button className="btn-email-auth" onClick={switchAuthMethod}>
+                {isPhone ? t.emailFallbackLink : t.phoneFallbackLink}
               </button>
             )}
-          </div>
+          </>
         )}
 
         {/* 유효성 오류 */}
@@ -276,13 +341,6 @@ export default function Step1Agreement({ t, onNext }) {
         {/* 인증번호 입력 */}
         {verifyStep === 'code' && (
           <div className="verify-code-area">
-            <div className="verify-hint">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <circle cx="7" cy="7" r="6" stroke="#F76E33" strokeWidth="1.2"/>
-                <path d="M7 4v3.5M7 10h.01" stroke="#F76E33" strokeWidth="1.2" strokeLinecap="round"/>
-              </svg>
-              <span>{isKo ? '테스트 코드: ' : 'Test code: '}<strong>{TEST_CODE}</strong></span>
-            </div>
             <div className="code-input-row">
               <div className="code-input-wrap">
                 <input
@@ -304,22 +362,15 @@ export default function Step1Agreement({ t, onNext }) {
                 {isKo ? '확인' : 'Verify'}
               </button>
             </div>
+            <div className="verify-hint">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <circle cx="7" cy="7" r="6" stroke="#F76E33" strokeWidth="1.2"/>
+                <path d="M7 4v3.5M7 10h.01" stroke="#F76E33" strokeWidth="1.2" strokeLinecap="round"/>
+              </svg>
+              <span>{isKo ? '테스트 코드: ' : 'Test code: '}<strong>{TEST_CODE}</strong></span>
+            </div>
             {codeError && <p className="verify-error">{isKo ? '인증번호가 올바르지 않습니다.' : 'Incorrect code. Please try again.'}</p>}
             {timer === 0 && <p className="verify-expired">{isKo ? '인증번호가 만료되었습니다. 재발송해 주세요.' : 'Code expired. Please resend.'}</p>}
-          </div>
-        )}
-
-        {/* 인증 완료 */}
-        {verifyStep === 'verified' && (
-          <div className="verify-success">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <circle cx="10" cy="10" r="9" fill="rgba(34,197,94,0.1)" stroke="#22C55E" strokeWidth="1.5"/>
-              <path d="M6 10l3 3 5-6" stroke="#22C55E" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <span>{isKo ? '인증이 완료되었습니다' : 'Verification complete'}</span>
-            <button className="verify-success__change" onClick={() => { setVerifyStep('input'); setInputValue('') }}>
-              {isKo ? '변경' : 'Change'}
-            </button>
           </div>
         )}
       </div>
@@ -330,14 +381,6 @@ export default function Step1Agreement({ t, onNext }) {
           {t.continueBtn}
         </button>
       </div>
-
-      <p className="login-redirect" style={{ textAlign: 'center', marginTop: '8px' }}>
-        {isKo ? '이미 계정이 있으신가요?' : 'Already have an account?'}
-        {' '}
-        <button className="login-redirect__link">
-          {isKo ? '로그인' : 'Sign in'}
-        </button>
-      </p>
 
       {/* 약관 모달 */}
       {modal !== null && (
@@ -416,6 +459,15 @@ function EmailIcon() {
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
       <rect x="1.5" y="3.75" width="15" height="10.5" rx="1.5" stroke="#6B6B7B" strokeWidth="1.5"/>
       <path d="M1.5 6.75L9 11.25L16.5 6.75" stroke="#6B6B7B" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  )
+}
+function BizIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <rect x="2" y="5" width="14" height="10" rx="1.5" stroke="#6B6B7B" strokeWidth="1.5"/>
+      <path d="M6 5V4a2 2 0 014 0v1" stroke="#6B6B7B" strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M2 9h14" stroke="#6B6B7B" strokeWidth="1.5" strokeLinecap="round"/>
     </svg>
   )
 }

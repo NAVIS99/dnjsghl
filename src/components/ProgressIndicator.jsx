@@ -1,8 +1,8 @@
 import './ProgressIndicator.css'
 
-export default function ProgressIndicator({ currentStep, onStepClick, labels }) {
+export default function ProgressIndicator({ currentStep, onStepClick, labels, wide }) {
   return (
-    <div className="progress">
+    <div className={`progress ${wide ? 'progress--wide' : ''}`}>
       <div className="progress__track">
         <div
           className="progress__fill"

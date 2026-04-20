@@ -5,6 +5,10 @@
   height: 66px;
 }
 
+.progress--wide {
+  width: 56%;
+}
+
 .progress__track {
   position: absolute;
   top: 20px;

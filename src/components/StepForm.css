@@ -1360,6 +1360,307 @@
   font-weight: 500;
 }
 
+/* ===== 이메일 인증 전환 텍스트 버튼 ===== */
+.btn-email-auth {
+  display: block;
+  width: 100%;
+  padding: 6px 0;
+  border: none;
+  background: transparent;
+  font-family: var(--font-pretendard);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-align: center;
+  cursor: pointer;
+  transition: color 0.15s;
+  margin-top: 6px;
+}
+
+.btn-email-auth:hover {
+  color: var(--color-primary);
+}
+
+/* ===== 인증 완료 마크 ===== */
+.field-verified-mark {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+/* ===== 주소 입력 UI ===== */
+.address-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.address-row {
+  display: flex;
+  gap: 8px;
+}
+
+.address-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 6px;
+  font-family: var(--font-pretendard);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  background: white;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.address-input:focus {
+  border-color: var(--color-primary);
+}
+
+.address-input[readonly] {
+  background: #F8F8FA;
+  color: var(--color-text-secondary);
+  cursor: default;
+}
+
+.address-input--postal {
+  flex: 1;
+}
+
+.btn-address-search {
+  width: 128px;
+  flex-shrink: 0;
+  height: 48px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 6px;
+  background: var(--color-primary);
+  font-family: var(--font-pretendard);
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+
+.btn-address-search:hover {
+  opacity: 0.85;
+}
+
+/* ===== 주소 검색 모달 ===== */
+.address-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 17, 40, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+}
+
+.address-modal {
+  width: 100%;
+  max-width: 480px;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
+
+.address-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.address-modal__title {
+  font-family: var(--font-pretendard);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.address-modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.address-modal__close:hover {
+  background: #F3F3F5;
+}
+
+.address-modal__search {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.address-modal__input {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 6px;
+  font-family: var(--font-pretendard);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+.address-modal__input:focus {
+  border-color: var(--color-primary);
+}
+
+.address-modal__results {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.address-modal__item {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.1s;
+  border-bottom: 1px solid #F3F3F5;
+}
+
+.address-modal__item:hover {
+  background: #F8F8FA;
+}
+
+.address-modal__postal {
+  font-family: var(--font-pretendard);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-accent);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.address-modal__road {
+  font-family: var(--font-pretendard);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+}
+
+.address-modal__empty {
+  padding: 32px 20px;
+  text-align: center;
+  font-family: var(--font-pretendard);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+/* ===== 담당자 명함 업로드 ===== */
+.biz-card-upload {
+  border: 1.5px solid var(--color-border);
+  border-radius: 6px;
+  padding: 14px 16px;
+  background: #FAFAFA;
+}
+
+.biz-card-upload__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.biz-card-upload__label {
+  font-family: var(--font-pretendard);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.biz-card-upload__btn {
+  height: 34px;
+  padding: 0 14px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 5px;
+  background: white;
+  font-family: var(--font-pretendard);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.biz-card-upload__btn:hover {
+  border-color: var(--color-primary);
+  background: rgba(247, 110, 51, 0.04);
+}
+
+.biz-card-upload__desc {
+  margin-top: 8px;
+  font-family: var(--font-pretendard);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.biz-card-upload__file {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+}
+
+.biz-card-upload__filename {
+  flex: 1;
+  font-family: var(--font-pretendard);
+  font-size: 13px;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.biz-card-upload__remove {
+  display: flex;
+  align-items: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
 /* ===== 로그인 리다이렉트 ===== */
 .login-redirect {
   text-align: center;
@@ -1447,6 +1748,278 @@
   .personalization-panel {
     padding: 20px 16px;
   }
+}
+
+/* ===== 조회/파일 성공 메시지 ===== */
+.field-success {
+  font-family: var(--font-pretendard);
+  font-size: 12px;
+  color: #16A34A;
+  margin-top: -4px;
+}
+
+/* ===== 파일 첨부 행 ===== */
+.form-field__file-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.form-field__file-row .form-field__input-wrap {
+  flex: 1;
+}
+
+/* ===== 파일찾기 버튼 ===== */
+.btn-file-browse {
+  width: 128px;
+  flex-shrink: 0;
+  height: 52.5px;
+  padding: 0 16px;
+  background: var(--color-primary);
+  border-radius: 4px;
+  font-family: var(--font-pretendard);
+  font-weight: 600;
+  font-size: 13px;
+  color: white;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btn-file-browse:hover {
+  opacity: 0.85;
+}
+
+/* ===== 필드 힌트 텍스트 ===== */
+.field-hint {
+  font-family: var(--font-pretendard);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin-top: -4px;
+}
+
+/* ===== 사업자 정보 안내 배너 ===== */
+.biz-notice-banner {
+  padding: 12px 20px;
+  background: rgba(10, 17, 40, 0.04);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-family: var(--font-pretendard);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.75;
+  text-align: center;
+  white-space: pre-line;
+}
+
+/* ===== 레이블 + 인라인 노트 행 ===== */
+.form-field__label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ===== 사업자 정보 노트 (hover tooltip) ===== */
+.biz-info-note {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-pretendard);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  cursor: default;
+  user-select: none;
+}
+
+.biz-info-note__label {
+  white-space: nowrap;
+  font-weight: 500;
+  color: var(--color-primary);
+}
+
+.biz-info-note__tooltip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  background: rgba(10, 17, 40, 0.92);
+  color: white;
+  font-family: var(--font-pretendard);
+  font-size: 12px;
+  line-height: 1.6;
+  padding: 10px 14px;
+  border-radius: 6px;
+  white-space: nowrap;
+  z-index: 100;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.biz-info-note__tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 16px;
+  border: 5px solid transparent;
+  border-top-color: rgba(10, 17, 40, 0.92);
+}
+
+.biz-info-note__tooltip--right {
+  left: auto;
+  right: 0;
+}
+
+.biz-info-note__tooltip--right::after {
+  left: auto;
+  right: 16px;
+}
+
+.biz-info-note:hover .biz-info-note__tooltip {
+  display: block;
+}
+
+/* ===== 경매 섹션 (완료 페이지) ===== */
+.auction-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auction-section__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.auction-section__title {
+  font-family: var(--font-pretendard);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--color-primary);
+}
+
+.auction-section__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  background: var(--color-accent);
+  border-radius: 100px;
+  font-family: var(--font-pretendard);
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+}
+
+.auction-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.auction-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  background: #F8F8FA;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.auction-item:hover {
+  background: white;
+  border-color: #BBBBC8;
+}
+
+.auction-item__left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.auction-item__top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.auction-item__badge {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 100px;
+  border: 1.5px solid #BBBBC8;
+  font-family: var(--font-pretendard);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.auction-item__badge--live {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.auction-item__title {
+  font-family: var(--font-pretendard);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--color-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.auction-item__dday {
+  font-family: var(--font-pretendard);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.auction-item__dday strong {
+  font-weight: 700;
+}
+
+.auction-item__type {
+  font-family: var(--font-pretendard);
+  font-size: 11px;
+  color: #BBBBC8;
+  font-weight: 500;
+}
+
+.auction-item__preview {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.auction-item__preview span {
+  font-family: var(--font-pretendard);
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.3px;
 }
 
 @media (max-width: 480px) {
