@@ -3,7 +3,9 @@ import './StepForm.css'
 
 export default function Step2BasicInfo({ t, onNext, onPrev, memberTypeIdx = 0, verifiedInput = '', verifiedMethod = 'phone' }) {
   const [form, setForm] = useState({
-    userId: '', password: '', passwordConfirm: '', email: '', name: '', birthdate: '',
+    userId: '', password: '', passwordConfirm: '',
+    email: verifiedMethod === 'email' ? verifiedInput : '',
+    name: '', birthdate: '',
   })
   const [submitted, setSubmitted] = useState(false)
   const [gender, setGender] = useState('')
@@ -115,7 +117,8 @@ export default function Step2BasicInfo({ t, onNext, onPrev, memberTypeIdx = 0, v
           {form.passwordConfirm && form.password !== form.passwordConfirm && <p className="field-error">{isKo ? '비밀번호가 일치하지 않습니다.' : 'Passwords do not match.'}</p>}
         </div>
 
-        {/* 신분증 사본 (선택) */}
+        {/* 신분증 사본 (선택) - 해외 개인/사업자만 */}
+        {(memberTypeIdx === 2 || memberTypeIdx === 3) && (
         <div className="form-field">
           <label className="form-field__label">{isKo ? '신분증 사본' : 'ID Document'} <span className="label-optional">{t.optionalMark}</span></label>
           <div className="form-field__file-row">
@@ -141,6 +144,7 @@ export default function Step2BasicInfo({ t, onNext, onPrev, memberTypeIdx = 0, v
           <p className="field-hint">{isKo ? 'jpg, jpeg, png, heic 또는 pdf 파일 업로드 (검수 후 모든 서비스 이용 가능)' : 'Upload jpg, jpeg, png, heic, or pdf (All services available after review)'}</p>
           <input ref={idDocInputRef} type="file" accept=".jpg,.jpeg,.png,.heic,.pdf" style={{ display: 'none' }} onChange={(e) => setIdDocFile(e.target.files[0] || null)} />
         </div>
+        )}
 
         {/* 이름 / 담당자 이름 */}
         <div className="form-field" ref={refs.name}>
@@ -168,14 +172,35 @@ export default function Step2BasicInfo({ t, onNext, onPrev, memberTypeIdx = 0, v
           <label className="form-field__label">{t.email} <span className="text-accent">*</span></label>
           <div className="form-field__input-wrap">
             <EmailIcon />
-            <input className="form-field__input" type="email" placeholder="your.email@example.com" value={form.email} onChange={set('email')} style={submitted && !form.email ? { borderColor: '#E53E3E' } : {}} />
-            {form.email && <button className="field-clear-btn" type="button" onClick={clear('email')}><ClearIcon /></button>}
+            <input
+              className="form-field__input"
+              type="email"
+              placeholder="your.email@example.com"
+              value={form.email}
+              onChange={verifiedMethod === 'email' ? undefined : set('email')}
+              disabled={verifiedMethod === 'email'}
+              style={{
+                paddingRight: verifiedMethod === 'email' ? '44px' : (form.email ? '40px' : '16px'),
+                ...(verifiedMethod === 'email' ? { backgroundColor: '#F8F8FA', color: '#6B6B7B' } : {}),
+                ...(submitted && !form.email ? { borderColor: '#E53E3E' } : {}),
+              }}
+            />
+            {verifiedMethod === 'email' ? (
+              <span className="field-verified-mark">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <circle cx="9" cy="9" r="8" fill="rgba(34,197,94,0.1)" stroke="#22C55E" strokeWidth="1.3"/>
+                  <path d="M5.5 9l2.5 2.5 4.5-5" stroke="#22C55E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+            ) : (
+              form.email && <button className="field-clear-btn" type="button" onClick={clear('email')}><ClearIcon /></button>
+            )}
           </div>
           {submitted && !form.email && <p className="field-error">{isKo ? '이메일을 입력해주세요.' : 'Please enter your email.'}</p>}
         </div>
 
-        {/* 휴대폰 번호 (사업자 유형, 휴대폰 인증인 경우) */}
-        {isBiz && verifiedInput && verifiedMethod === 'phone' && (
+        {/* 휴대폰 번호 (휴대폰 인증한 모든 회원) */}
+        {verifiedInput && verifiedMethod === 'phone' && (
           <div className="form-field">
             <label className="form-field__label">{t.verifiedPhoneLabel} <span className="text-accent">*</span></label>
             <div className="form-field__input-wrap">
